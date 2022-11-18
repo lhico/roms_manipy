@@ -5,7 +5,7 @@ on: push
 
 jobs:
   superlint:
-  namename: Lint code base
+  name: Lint code base
   runs-on: ubuntu-lastest
   steps:
     - name: Checkout code
