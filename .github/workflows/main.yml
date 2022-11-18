@@ -1,51 +1,18 @@
----
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
-name: Lint Code Base 
 
-#############################
-# Start the job on all push #
-#############################
-on:
-  push:
-    branches-ignore: [master, main]
-    # Remove the line above to run when pushing to master
-  pull_request:
-    branches: [master, main]
+name: Super-Linter
 
-###############
-# Set the Job #
-###############
+on: push
+
 jobs:
-  build:
-    # Name the Job
-    name: Lint Code Base
-    # Set the agent to run on
+  superlint:
+    name: Lint code base
     runs-on: ubuntu-latest
-
-    ##################
-    # Load all steps #
-    ##################
     steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper
-          # list of changed files within `super-linter`
-          fetch-depth: 0
 
-      ################################
-      # Run Linter against code base #
-      ################################
-      - name: Lint Code Base
-        uses: github/super-linter@v4
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
         env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
