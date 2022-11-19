@@ -33,8 +33,6 @@ jobs:
           conda list
           conda config --show-sources
           conda config --show
-      #     conda create --name XROMS python=3.8
-      #     conda activate XROMS
           conda install -c conda-forge xesmf pip
           conda install -c conda-forge xesmf esmpy=8.0.0
           conda install -c conda-forge esmpy xarray scipy dask netCDF4
