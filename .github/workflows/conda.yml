@@ -35,11 +35,11 @@ jobs:
           conda config --show
       #     conda create --name XROMS python=3.8
       #     conda activate XROMS
-      #     conda install -c conda-forge xesmf pip
-      #     conda install -c conda-forge xesmf esmpy=8.0.0
-      #     conda install -c conda-forge esmpy xarray scipy dask netCDF4
-      #     conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
-      #     pip install pytest
-      #     pytest -v --pyargs xesmf
+          conda install -c conda-forge xesmf pip
+          conda install -c conda-forge xesmf esmpy=8.0.0
+          conda install -c conda-forge esmpy xarray scipy dask netCDF4
+          conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
+          pip install pytest
+          pytest -v --pyargs xesmf
       # #     pip install git+git://github.com/kthyng/xcmocean
       # #     pip install git+git://github.com/hetland/xroms
