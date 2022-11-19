@@ -22,7 +22,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: foo
-          python-version: 3.8s
+          python-version: 3.8
           channels: conda-forge
           allow-softlinks: true
           channel-priority: flexible
@@ -33,12 +33,13 @@ jobs:
           conda list
           conda config --show-sources
           conda config --show
-          conda install -c conda-forge xesmf pip
-          conda install -c conda-forge xesmf esmpy=8.0.0
-          conda install -c conda-forge esmpy xarray scipy dask netCDF4
-          conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
-          pip install pytest
-          pytest -v --pyargs xesmf
-          conda list
-      #     pip install git+git://github.com/kthyng/xcmocean
-      #     pip install git+git://github.com/hetland/xroms
+      #     conda create --name XROMS python=3.8
+      #     conda activate XROMS
+      #     conda install -c conda-forge xesmf pip
+      #     conda install -c conda-forge xesmf esmpy=8.0.0
+      #     conda install -c conda-forge esmpy xarray scipy dask netCDF4
+      #     conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
+      #     pip install pytest
+      #     pytest -v --pyargs xesmf
+      # #     pip install git+git://github.com/kthyng/xcmocean
+      # #     pip install git+git://github.com/hetland/xroms
