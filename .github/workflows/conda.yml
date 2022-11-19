@@ -52,6 +52,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: XROMS
+      - run: |
           pip install pytest
           pytest -v --pyargs xesmf
 
