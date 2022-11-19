@@ -12,26 +12,19 @@ on:
 
 jobs:
   create-env:
-    name: Ex4 Linux
+    name: Prepare environment
     runs-on: "ubuntu-latest"
     defaults:
       run:
         shell: bash -el {0}
     steps:
+      - name: Checkout code
       - uses: actions/checkout@v2
-      - name: Cache conda
-        uses: actions/cache@v2
-        env:
-          # Increase this value to reset cache if etc/example-environment.yml has not changed
-          CACHE_NUMBER: 0
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
-            hashFiles('etc/example-environment.yml') }}
+
+      -name: Install dependencies      
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: foo
+          activate-environment: XROMS
           python-version: 3.8
           channels: conda-forge
           allow-softlinks: true
@@ -47,7 +40,18 @@ jobs:
           conda install -c conda-forge xesmf esmpy=8.0.0
           conda install -c conda-forge esmpy xarray scipy dask netCDF4
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
+          pip install git+git://github.com/kthyng/xcmocean
+          pip install git+git://github.com/hetland/xroms
+  test-code:
+    name: Test xesmf environment
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -el {0}
+    needs: [create-env]
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: XROMS
           pip install pytest
           pytest -v --pyargs xesmf
-      # #     pip install git+git://github.com/kthyng/xcmocean
-      # #     pip install git+git://github.com/hetland/xroms
+
