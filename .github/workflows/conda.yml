@@ -46,7 +46,6 @@ jobs:
         shell: bash -el {0}
     needs: [create-env]
     steps:
-      - name: testing
       - uses: actions/checkout@v2         
       - uses: conda-incubator/setup-miniconda@v2
         with:
