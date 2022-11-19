@@ -40,24 +40,3 @@ jobs:
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
           pip install git+git://github.com/kthyng/xcmocean
           pip install git+git://github.com/hetland/xroms
-  test-code:
-    name: Test xesmf environment
-    runs-on: "ubuntu-latest"
-    defaults:
-      run:
-        shell: bash -el {0}
-    needs: [create-env]
-    steps:
-      - name: testing
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: XROMS
-          python-version: 3.8
-          channels: conda-forge
-          allow-softlinks: true
-          channel-priority: flexible
-          show-channel-urls: true
-          use-only-tar-bz2: true
-      - run: |
-          pip install pytest
-          pytest -v --pyargs xesmf
