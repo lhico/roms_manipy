@@ -39,7 +39,7 @@ jobs:
           conda install -c conda-forge xesmf esmpy=8.0.0
           conda install -c conda-forge esmpy xarray scipy dask netCDF4
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
-      #     pip install pytest
+          pip install pytest
       #     pytest -v --pyargs xesmf
       # # install xcmocean
       #     pip install git+git://github.com/kthyng/xcmocean
