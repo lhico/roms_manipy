@@ -55,5 +55,4 @@ jobs:
       - run: |
           pip install pytest
           pytest -v --pyargs xesmf
-          echo $UID
 
