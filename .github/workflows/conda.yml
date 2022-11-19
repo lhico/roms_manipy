@@ -36,7 +36,6 @@ jobs:
           conda create --name XROMS python=3.8
           conda activate XROMS
           conda install -c conda-forge xesmf pip
-      # # install and test xesmf
           conda install -c conda-forge xesmf esmpy=8.0.0
           conda install -c conda-forge esmpy xarray scipy dask netCDF4
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
