@@ -28,25 +28,24 @@ jobs:
           environment-file: false
           environment-name: XROMS
       - run: |
-          micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
-          pip install git+git://github.com/hetland/xroms
-  test-code:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
-    defaults:
-      run:
-        shell: bash -el {0}
-    needs: [create-env]
-    steps:
-      - uses: actions/checkout@v2         
-      - uses: mamba-org/provision-with-micromamba@v13
-        with:
-          activate-environment: XROMS
-          allow-softlinks: true
-          channel-priority: flexible
-      - run: |
-          pip install pytest
-          pytest -v --pyargs xesmf
+          micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge        micromamba activate TEST
+          micromamba activate TEST
+  # test-code:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: ["3.7", "3.8", "3.9", "3.10"]
+  #   defaults:
+  #     run:
+  #       shell: bash -el {0}
+  #   needs: [create-env]
+  #   steps:
+  #     - uses: actions/checkout@v2         
+  #     - uses: mamba-org/provision-with-micromamba@v13
+  #       with:
+  #         allow-softlinks: true
+  #         channel-priority: flexible
+  #     - run: |
+  #         pip install pytest
+  #         pytest -v --pyargs xesmf
