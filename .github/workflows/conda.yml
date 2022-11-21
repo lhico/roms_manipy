@@ -48,7 +48,7 @@ jobs:
       - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
-      - name test
+      - name: test
           run: |
             pip install pytest
             pytest -v --pyargs xesmf
