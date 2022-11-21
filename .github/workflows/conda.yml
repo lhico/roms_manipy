@@ -11,6 +11,7 @@ on:
     branches: [master, main]
 
 jobs:
+  
   create-env:
     name: Prepare environment
     runs-on: "ubuntu-latest"
@@ -18,20 +19,16 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v2    
+    - uses: actions/checkout@v3
+   
       - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
           environment-name: XROMS
           extra-specs: |
-            python=3.9
-          python-version: 3.8
+            python=3.8
           channels: conda-forge
       - run: |
-          conda info
-          conda list
-          conda config --show-sources
-          conda config --show
           conda install -c conda-forge xesmf esmpy=8.0.0 pip
           conda install -c conda-forge xarray scipy dask netCDF4
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
@@ -44,14 +41,13 @@ jobs:
         shell: bash -el {0}
     needs: [create-env]
     steps:
-      - uses: actions/checkout@v2         
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/checkout@v3        
+      - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
           environment-name: XROMS
           extra-specs: |
-            python=3.9
-          python-version: 3.8
+            python=3.8
           channels: conda-forge
       - run: |
           pip install pytest
