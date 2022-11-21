@@ -32,9 +32,12 @@ jobs:
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
+          git clone git@github.com:hetland/xroms.git
+          cd xroms
+          pip install -e .
 
-      - name: test xesmf installation
-        shell: bash -l {0}
-        run: |
-          micromamba activate TEST
-          python -m pytest --cov=./ --cov-report=xml --verbose
+      # - name: test xesmf installation
+      #   shell: bash -l {0}
+      #   run: |
+      #     micromamba activate TEST
+      #     python -m pytest --cov=./ --cov-report=xml --verbose
