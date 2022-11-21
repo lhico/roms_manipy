@@ -20,10 +20,9 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3    
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
         with:
-          cache: 'pip' # caching pip dependencies
+          name: xoceanmodel/xroms
 
       - name: Setup Micromamba
         uses: mamba-org/provision-with-micromamba@v13
@@ -36,6 +35,8 @@ jobs:
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
+          git config --global url.https://github.com/.insteadOf git://github.com/
+          git clone https://github.com/xoceanmodel/xroms
           python -m  pip install git+git://github.com/hetland/xroms
 
       # - name: test xesmf installation
