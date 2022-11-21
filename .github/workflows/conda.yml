@@ -22,7 +22,7 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v2    
+      - uses: actions/checkout@v3    
       - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
@@ -40,7 +40,7 @@ jobs:
   #       shell: bash -el {0}
   #   needs: [create-env]
   #   steps:
-  #     - uses: actions/checkout@v2         
+  #     - uses: actions/checkout@3         
   #     - uses: mamba-org/provision-with-micromamba@v13
   #       with:
   #         allow-softlinks: true
