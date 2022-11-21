@@ -8,3 +8,9 @@ matplotlib
 cartopy
 xgcm
 xcmocean
+cf_xarray
+dask
+jupyter
+jupyterlab
+numpy
+xarray
