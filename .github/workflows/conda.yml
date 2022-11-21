@@ -28,19 +28,12 @@ jobs:
           environment-file: false
           persist-credentials: false     
 
-      - name: Reconfigure git to use HTTP authentication
-        run: >
-          git config --global url."https://github.com/".insteadOf
-          ssh://git@github.com/
-
       - name: install
         shell: bash -l {0}
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
-          git clone git@github.com:hetland/xroms.git
-          cd xroms
-          pip install -e .
+          pip install xroms
 
       # - name: test xesmf installation
       #   shell: bash -l {0}
