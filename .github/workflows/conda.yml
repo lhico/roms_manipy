@@ -32,22 +32,23 @@ jobs:
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
-  # test-code:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest]
-  #       python-version: ["3.7", "3.8", "3.9", "3.10"]
-  #   defaults:
-  #     run:
-  #       shell: bash -el {0}
-  #   needs: [create-env]
-  #   steps:
-  #     - uses: actions/checkout@3         
-  #     - uses: mamba-org/provision-with-micromamba@v13
-  #       with:
-  #         allow-softlinks: true
-  #         channel-priority: flexible
-  #     - run: |
-  #         pip install pytest
-  #         pytest -v --pyargs xesmf
+
+  test-code:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.8"]
+    defaults:
+      run:
+        shell: bash -el {0}
+    needs: [create-env]
+    steps:
+      - uses: actions/checkout@3         
+      - uses: mamba-org/provision-with-micromamba@v13
+        with:
+          allow-softlinks: true
+          channel-priority: flexible
+      - run: |
+          pip install pytest
+          pytest -v --pyargs xesmf
