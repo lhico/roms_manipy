@@ -28,8 +28,8 @@ jobs:
           environment-file: false
           environment-name: XROMS
       - run: |
-        micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
-        pip install git+git://github.com/hetland/xroms
+          micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
+          pip install git+git://github.com/hetland/xroms
   test-code:
     runs-on: ${{ matrix.os }}
     strategy:
