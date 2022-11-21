@@ -19,7 +19,7 @@ jobs:
         shell: bash -el {0}
     steps:
       - uses: actions/checkout@v2    
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: mamba-org/provision-with-micromamba@v13
         with:
           activate-environment: XROMS
           python-version: 3.8
@@ -33,11 +33,10 @@ jobs:
           conda list
           conda config --show-sources
           conda config --show
-          conda install -c conda-forge xesmf pip
-          conda install -c conda-forge xesmf esmpy=8.0.0
-          conda install -c conda-forge esmpy xarray scipy dask netCDF4
+          conda install -c conda-forge xesmf esmpy=8.0.0 pip
+          conda install -c conda-forge xarray scipy dask netCDF4
           conda install -c conda-forge matplotlib cartopy xgcm jupyter jupyterlab
-          pip install git+git://github.com/kthyng/xcmocean
+          conda install -c xcmocean
           pip install git+git://github.com/hetland/xroms
   test-code:
     runs-on: "ubuntu-latest"
