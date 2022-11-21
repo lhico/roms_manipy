@@ -21,6 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3    
+      - uses: actions/setup-python@v1
 
       - name: Setup Micromamba
         uses: mamba-org/provision-with-micromamba@v13
@@ -33,7 +34,7 @@ jobs:
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
-          pip install xroms
+          pip install git+git://github.com/hetland/xroms
 
       # - name: test xesmf installation
       #   shell: bash -l {0}
