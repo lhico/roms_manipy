@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3    
         with:
           name: xoceanmodel/xroms
 
@@ -35,7 +35,6 @@ jobs:
         run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
-          git config --global url.https://github.com/.insteadOf git://github.com/
           python -m  pip install git+git://github.com/hetland/xroms
 
       # - name: test xesmf installation
