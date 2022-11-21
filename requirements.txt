@@ -1,6 +1,6 @@
 pip
 xesmf
-esmpy=8.0.0
+esmpy=8.0.1
 scipy
 dask
 netCDF4
