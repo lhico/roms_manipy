@@ -26,7 +26,6 @@ jobs:
       - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
-          environment-name: XROMS
       - run: |
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge        micromamba activate TEST
           micromamba activate TEST
