@@ -51,6 +51,5 @@ jobs:
       - name: test
         shell: bash -l {0}
         run: |
-          micromamba activate TEST
           pip install pytest
           pytest -v --pyargs xesmf
