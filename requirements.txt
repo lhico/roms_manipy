@@ -1,0 +1,10 @@
+pip
+xesmf
+esmpy=8.0.0
+scipy
+dask
+netCDF4
+matplotlib
+cartopy
+xgcm
+xcmocean
