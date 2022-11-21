@@ -26,7 +26,13 @@ jobs:
         uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
-      
+          persist-credentials: false     
+
+      - name: Reconfigure git to use HTTP authentication
+        run: >
+          git config --global url."https://github.com/".insteadOf
+          ssh://git@github.com/
+
       - name: install
         shell: bash -l {0}
         run: |
