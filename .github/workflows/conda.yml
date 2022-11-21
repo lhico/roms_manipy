@@ -33,9 +33,9 @@ jobs:
           micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
 
-      - name: test xesmf installation
-        shell: bash -l {0}
-        run: |
-          micromamba activate TEST
-          pip install pytest
-          pytest -v --pyargs xesmf
+      # - name: test xesmf installation
+      #   shell: bash -l {0}
+      #   run: |
+      #     micromamba activate TEST
+      #     pip install pytest
+      #     pytest -v --pyargs xesmf
