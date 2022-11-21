@@ -17,6 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.8"]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v3    
@@ -29,7 +30,7 @@ jobs:
       - name: install
         shell: bash -l {0}
         run: |
-          micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge        micromamba activate TEST
+          micromamba create --yes --name TEST python=${{ matrix.python-version }} --file requirements.txt --file requirements-dev.txt --channel conda-forge
           micromamba activate TEST
   # test-code:
   #   runs-on: ${{ matrix.os }}
