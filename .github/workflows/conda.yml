@@ -12,18 +12,16 @@ on:
 
 jobs:
   create-env:
-    name: Prepare environment
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.8"]
-    defaults:
-      run:
-        shell: bash -el {0}
+
     steps:
-      - name: Setup Micromamba
       - uses: actions/checkout@v3    
+
+      - name: Setup Micromamba
       - uses: mamba-org/provision-with-micromamba@v13
         with:
           environment-file: false
