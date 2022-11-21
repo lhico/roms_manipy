@@ -42,14 +42,9 @@ jobs:
     needs: [create-env]
 
     steps:
-      - uses: actions/checkout@v3         
-
-      - uses: mamba-org/provision-with-micromamba@v13
-        with:
-          environment-file: false
-
       - name: test
         shell: bash -l {0}
         run: |
+          micromamba activate TEST
           pip install pytest
           pytest -v --pyargs xesmf
