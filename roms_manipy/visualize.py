@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import figure as _figure
 from matplotlib import axes as _axes
 import xarray as _xr
+import xcmocean
 
 def fig_ax_ok(fig: _opt[_figure.Figure],
               ax : _opt[_axes._subplots.Axes]):
@@ -171,7 +172,7 @@ def plot(ds1    : _opt[_xr.core.dataset.Dataset],
         _type_: _description_
     """
     dict_plot ={
-        'pcolor'  : lambda x : x.ds1.plot,
+        'pcolor'  : lambda x : x.plot,
         'contour' : lambda x : x.plot.contour,
         'contourf': lambda x : x.plot.contourf,
     }
