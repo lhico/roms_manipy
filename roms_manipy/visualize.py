@@ -5,12 +5,13 @@ from matplotlib import axes as _axes
 import cartopy.crs as ccrs
 import xarray as _xr
 import numpy as np
-
+import xcmocean
 
 try:
     from sectionate.section import create_section, create_section_composite
 except:
     raise ValueError("Please, install sectionate, otherwise Transect will be not available.")
+
 
 def fig_ax_ok(fig: _opt[_figure.Figure],
               ax : _opt[_axes._subplots.Axes]):
@@ -179,7 +180,7 @@ def plot(ds1    : _opt[_xr.core.dataset.Dataset],
         _type_: _description_
     """
     dict_plot ={
-        'pcolor'  : lambda x : x.ds1.plot,
+        'pcolor'  : lambda x : x.plot,
         'contour' : lambda x : x.plot.contour,
         'contourf': lambda x : x.plot.contourf,
     }
