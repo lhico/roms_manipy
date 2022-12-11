@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib import figure as _figure
 from matplotlib import axes as _axes
 import cartopy.crs as ccrs
+import pandas as pd
 import xarray as _xr
 import numpy as np
-
 
 try:
     from sectionate.section import create_section, create_section_composite
@@ -225,80 +225,83 @@ class Transect(object):
     ##################################################################################
     ##---- functions to create a cross section based on two given coordinates ------##
     ##################################################################################
-    def create_transect(self, begin=None, final=None, lons=None, lats=None, varbs=None, 
-                              times=None, find=True, forced_limits=False):
+    def create_transect(self, lons=None, lats=None, varbs=None, 
+                              times=None, forced_limits=False):
         """
-            todo: documentation
+            todo: docstring
+            
+        Args:
+            lons,lats,times (list)      : list containing coordinates and times of each CTD profile
+            varbs (list)                : list of variables to extract from ROMS output
+            forced_limits (boolean)     : controls whether or not to extrapolate the final transect's location
         """
-        if begin and final:
-            print('Searching the nearest indexes for a straight line between two coordinates ...')
-            # initially, we search for the nearest grid cells to a straight line between
-            # the initial and final coordinates provided
-            lon0, lat0 = begin
-            lon1, lat1 = final
-
-            self.lons = [lon0, lon1]
-            self.lats = [lat0, lat1]
-
-            if find == True:
-                self._find_indexes(lon0, lat0,
-                                lon1, lat1,
-                                forced_limits=forced_limits)
-        elif lons.any() and lats.any():
-            print('Searching the nearest indexes for each location provided ...')
-            self.lons, self.lats = lons, lats
-            
-            # build transect from multiples profiles' locations
-            if find == True:
-                self._find_indexes_composite(lons, lats)
-
-        # second step is to extract the vertical profiles of each location found
-        if type(varbs) == str:
-            print(f'extracting transect for {varbs}')
-            # just extract a DataArray
-            self._extract_profiles(varb=varbs)
-            
-        elif type(varbs) == list:
-            for k,varb in enumerate(varbs):
-                print(f'extracting transect for {varb}')
-                # extract section
-                self._extract_profiles(varb=varb)
-                
-                if k == 0:
-                    # if it is the first variable, then we must convert a DataArray 
-                    # to Dataset, and then save the other variables
-                    self.ds = self.ds_section.to_dataset()
-                else:
-                    # save the transect into an already existent Dataset
-                    self.ds[varb] = self.ds_section
-        else:
-            raise ValueError(f"Type of varbs not available: {type(varbs)}")
+        self.lons, self.lats, self.times = list(lons), list(lats), list(times)
         
-        # TODO: implement temporal search
-        # third, and optional, extract profiles temporally closest to a list of datetimes
-        # self._get_temporal_profiles(times) --- UNDER CONSTRUCTION
+        # searching nearest cells to a list of coordinates (composite) or between
+        # two locations
+        if len(self.lons) == 2:
+            print('searching for cells between two locations')           
+            self._find_indexes(forced_limits=forced_limits)
+        else:
+            print('seaching for a composite of lons/lats')
+            self._find_indexes_composite()
+            
 
+        # extracting vertical profiles of each location found
+        for k,varb in enumerate(varbs):
+            print(f'extracting transect for {varb}')           
+            # extract section
+            self._extract_profiles(varb=varb)
+
+            if k == 0:
+                # if it is the first variable, then we must convert a DataArray 
+                # to Dataset, and then save the other variables
+                self.ds = self.ds_section.to_dataset()
+            else:
+                # save the transect into an already existent Dataset
+                self.ds[varb] = self.ds_section        
+        
     # find transect based on a list of segments, ideal to reconstruct cross sections from
     # CTD profiles' locations
-    def _find_indexes_composite(self, lons, lats):
-        plt.ioff()
-        
-        isec,jsec,xsec,ysec = create_section_composite(self.lon, self.lat,
-                                                        lons, lats)
-        # save the locations found
-        self.ds_locs = xr.Dataset()
-        self.ds_locs['lon'] = xr.DataArray(data=xsec, dims=('location'))
-        self.ds_locs['lat'] = xr.DataArray(data=ysec, dims=('location'))
-        self.isec = isec
-        self.jsec = jsec
+    def _find_indexes_composite(self):
+        plt.ioff() # it is mandatory to use sectionate
 
-        # create the begin and the end of the transect in latlon pairs
-        self.begin_transect = (ysec[0], xsec[0])
-        self.final_transect = (ysec[-1], xsec[-1])
+        if self.times is None:
+            _, _, xsec, ysec = create_section_composite(self.lon, self.lat,
+                                                            self.lons, self.lats)
+            
+            # if no times is provide, then use all the ocean_time axis
+            tsec = self.data['ocean_time'].values
+        else:
+            # looping
+            xsec_list = np.array([])
+            ysec_list = np.array([])
+            tsec_list = np.array([], dtype='datetime64')
+            for i in np.arange(1, len(self.lons)):
+                _, _, xsec, ysec = create_section_composite(self.lon, self.lat,
+                                                                self.lons[i-1:i+1], self.lats[i-1:i+1])
+                
+                tsec = pd.date_range(start=pd.to_datetime(self.times[i-1]),
+                                     end=pd.to_datetime(self.times[i]),
+                                     periods=len(xsec)).values
+                
+                xsec_list = np.concatenate((xsec_list, xsec))
+                ysec_list = np.concatenate((ysec_list, ysec))
+                tsec_list = np.concatenate((tsec_list, tsec))
+                
+            xsec = xsec_list
+            ysec = ysec_list
+            tsec = tsec_list
+            
+        # save the locations found
+        self.ds_locs = _xr.Dataset()
+        self.ds_locs['lon'] = _xr.DataArray(data=xsec, dims=('location'))
+        self.ds_locs['lat'] = _xr.DataArray(data=ysec, dims=('location'))
+        self.ds_locs['times'] = _xr.DataArray(data=tsec, dims=('location'))
 
     # find transect based on a begin and final location. It cross a straight line and find
     # the nearests cells to it
-    def _find_indexes(self, lon0, lat0, lon1, lat1, forced_limits=False):
+    def _find_indexes(self, forced_limits=False):
         """
             Given an inital and final geographical location, creates a best fit linear
             transect and found all values near this transect in a numerical grid domain.
@@ -307,14 +310,17 @@ class Transect(object):
             https://github.com/raphaeldussin/sectionate/blob/master/sectionate/section.py
         """
         plt.ioff() # in case plt.ion() is active
-
+        
+        lon0,lon1 = self.lons
+        lat0,lat1 = self.lats
+        
         isec,jsec,xsec,ysec = create_section(self.lon, self.lat,
                                              lon0, lat0,
                                              lon1, lat1)
         # save the locations found
-        self.ds_locs = xr.Dataset()
-        self.ds_locs['lon'] = xr.DataArray(data=xsec, dims=('location'))
-        self.ds_locs['lat'] = xr.DataArray(data=ysec, dims=('location'))
+        self.ds_locs = _xr.Dataset()
+        self.ds_locs['lon'] = _xr.DataArray(data=xsec, dims=('location'))
+        self.ds_locs['lat'] = _xr.DataArray(data=ysec, dims=('location'))
         self.isec = isec
         self.jsec = jsec
 
@@ -333,35 +339,17 @@ class Transect(object):
     # extract vertical profiles for a given variable (varb)
     def _extract_profiles(self, varb):
         """
-        """
-        
-        # get list of locations
-        sec_lons, sec_lats = self.ds_locs['lon'].values, self.ds_locs['lat'].values
-        
+        """        
         # TODO: optimize processing. Taking too long 'cause of this for loop
         # extract each profile
         list_ds_section = []
-        for lon0,lat0 in zip(sec_lons, sec_lats):
+        for lon0,lat0,time0 in zip(self.ds_locs['lon'].values, self.ds_locs['lat'].values, self.ds_locs['times'].values):
             profile = self.data[varb].xroms.sel2d(lon0, lat0)
+            profile = profile.sel(ocean_time=time0, method='nearest')
             list_ds_section.append(profile)
             
-        self.ds_section = xr.concat(list_ds_section, dim='profiles')
+        self.ds_section = _xr.concat(list_ds_section, dim='profiles')
 
-    # TODO: cada tempo deve estar associado à uma estação, então a solução não é trivial
-    # find the closest model profile to a given list of datetimes, to recreate the conditions
-    # which the observed transect was interpolated
-    def _get_temporal_profiles(self, times):
-        """
-        """
-        if hasattr(self, 'ds_section'):
-            list_profiles = []
-            for t in times:
-                profile = self.ds_section.sel(ocean_time=t, method='nearest')
-                list_profiles.append(profile)
-            
-            # build final transect
-            self.transect = xr.concat(list_profiles, dim='profiles')
-    
     # simple data visualization 
     def _plot(self, varb=None, T=-1, x='latitude', y='vertical', figsize=(10,6), cmap='magma', invertx=True):
         """
@@ -374,10 +362,10 @@ class Transect(object):
         self.ax_trans = self.fig.add_subplot(1,2,2, projection=ccrs.PlateCarree())
         
         # plot transect
-        if varb:
+        if 'ocean_time' in self.ds_section.dims:
             self.section = self.ds[varb].cf.isel(T=T)
         else:
-            self.section = self.ds_section.cf.isel(T=T)
+            self.section = self.ds[varb]
             
         self.section.where(~self.section.isnull(), drop=True).cf.plot(ax=self.ax_cross, x=x, y=y, cmap=cmap)
         
